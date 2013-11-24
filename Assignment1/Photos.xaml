@@ -10,6 +10,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="PortraitOrLandscape" Orientation="Landscape"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="728"
     
     shell:SystemTray.IsVisible="True">
@@ -24,7 +25,20 @@
         
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Image HorizontalAlignment="Center"  Name="imgPhotos" VerticalAlignment="Center"  />
+            <Image HorizontalAlignment="Center"  Name="imgPhotos" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                <toolkit:GestureService.GestureListener>
+                    <toolkit:GestureListener
+                        PinchStarted="OnPinchStarted"
+		                PinchDelta="OnPinchDelta"/>
+                </toolkit:GestureService.GestureListener>
+
+                <Image.RenderTransform>
+                    <CompositeTransform
+		                ScaleX="1" ScaleY="1"
+      		            TranslateX="0" TranslateY="0"/>
+                </Image.RenderTransform>
+            </Image>
+            
         </Grid>
     </Grid>
     

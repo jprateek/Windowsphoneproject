@@ -11,6 +11,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Text.RegularExpressions;
+using System.IO.IsolatedStorage;
+using Microsoft.Phone.Shell;
 
 
 namespace Assignment1
@@ -18,11 +20,17 @@ namespace Assignment1
     public partial class MainPage : PhoneApplicationPage
     {
 
-        String strProvider;
+        private const string emailKey = "email";
+        private const string pwdKey = "pwd";
+        private const string isSaveKey = "Savekey";
+
+        private IsolatedStorageSettings appSettings;
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
+            appSettings = IsolatedStorageSettings.ApplicationSettings;
         }
 
         //Checking if user has entered a valid emailid.
@@ -66,7 +74,7 @@ namespace Assignment1
         {
             string service = "lh2"; // Picasa	
             string accountType = "GOOGLE"; WebClient webClient = new WebClient();
-            Uri uri = new Uri(string.Format("https://www.google.com/accounts/ClientLogin?Email={0}&Passwd={1}&service={2}&accountType={3}", txtEmail.Text, passwordBox1.Password, service, accountType)); 
+            Uri uri = new Uri(string.Format("https://www.google.com/accounts/ClientLogin?Email={0}&Passwd={1}&service={2}&accountType={3}", App.username, App.password, service, accountType)); 
             webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(AuthDownloaded); 
             webClient.DownloadStringAsync(uri);
         }
@@ -75,7 +83,10 @@ namespace Assignment1
 
         private void btnLogon_Click(object sender, RoutedEventArgs e)
         {
+            // Getting the username, pwd and does user wants to save his credentials
             App.username = txtEmail.Text;
+            App.password = passwordBox1.Password;
+            App.isSaveDetails = (bool)chkSave.IsChecked;
             
             //Check if the txtEmail or pwdbox1 is empty
             if (String.IsNullOrWhiteSpace(txtEmail.Text) || String.IsNullOrWhiteSpace(passwordBox1.Password))
@@ -91,16 +102,10 @@ namespace Assignment1
                 if (IsValidEmail(txtEmail.Text) == true)
                 {
                   
-
-                    if (radioFlickr.IsChecked == true)
-                        strProvider = "Flickr";
-                    else
-                        strProvider = "Picasa";
-                    
+                                                         
                     // Authenticating the user details with google server 
                     GetAuth();
-            //        MessageBox.Show(AppResources.msgLoginSuccess +  "  " + strProvider);
-                   
+                               
                 }
                 else
                     MessageBox.Show(AppResources.msgInvalidemail);
@@ -117,11 +122,75 @@ namespace Assignment1
             this.NavigationService.Navigate(new Uri("/about.xaml", UriKind.Relative));
         }
 
-       
-        
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            
+            if (App.isSaveDetails == true)
+            {
+                // Saving logon details to the isolated storage.
+                if (appSettings.Contains(emailKey))
+                    appSettings[emailKey] = txtEmail.Text;
+                else
+                    appSettings.Add(emailKey, App.username);
 
-       
+                if (appSettings.Contains(pwdKey))
+                    appSettings[pwdKey] = passwordBox1.Password;
+                else
+                    appSettings.Add(pwdKey, App.password);
 
-        
+                if (appSettings.Contains(isSaveKey))
+                    appSettings[isSaveKey] = chkSave.IsChecked;
+                else
+                    appSettings.Add(isSaveKey, "true");
+            }
+           
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            //NavigationService.RemoveBackEntry();
+            base.OnNavigatedTo(e);
+            string isLogout;
+            if (NavigationContext.QueryString.TryGetValue("logout", out isLogout))
+            {
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                NavigationContext.QueryString.Clear();
+            }
+
+            if (appSettings.Contains(emailKey))
+            {
+                txtEmail.Text = (string)appSettings[emailKey];
+                passwordBox1.Password = (string)appSettings[pwdKey];
+              //  if( (string)appSettings[isSaveKey] == "true" )
+                    chkSave.IsChecked = true;
+            }
+
+            UpdateTile();
+            
+        }
+
+		// modify Application Tile data
+		private void UpdateTile()
+		{	
+			// get application tile
+			ShellTile tile = ShellTile.ActiveTiles.First();	
+			if (null != tile)	
+			{		
+                // create a new data for tile		
+                StandardTileData data = new StandardTileData();		
+                // tile foreground data		
+                data.Title = "photo frame";		
+                data.BackgroundImage = new Uri("/Images/reel7.jpg", UriKind.Relative);		
+                data.Count = 0;		
+                // to make tile flip add data to background also		
+                data.BackTitle = "photo frame";
+                data.BackContent = "New photos will be notified here";		
+                // update tile		
+                tile.Update(data);	
+            }
+        }
+
+		
     }
 }

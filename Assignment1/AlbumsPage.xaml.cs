@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Collections;
+using Microsoft.Phone.Shell;
 
 namespace Assignment1
 {
@@ -35,7 +36,6 @@ namespace Assignment1
 
         private void GetAlbums()
         {
-            
             string dataFeed = String.Format("http://picasaweb.google.com/data/feed/api/user/{0}?alt=json", App.username);
             WebClient webClient = new WebClient();
             webClient.Headers[HttpRequestHeader.Authorization] = "GoogleLogin auth=" + App.auth;
@@ -111,9 +111,11 @@ namespace Assignment1
                         album.thumbnail = (string)mediathumbnail["url"];
                         // Add album to albums
                         objApp.albums.Add(album);
+                        
                     }
 
                     listBoxAlbums.ItemsSource = objApp.albums;
+                    UpdateLiveTileWithCountAndImage();
                 }
             }
             catch (WebException)
@@ -129,6 +131,41 @@ namespace Assignment1
         private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/capture.xaml", UriKind.Relative));
+        }
+
+        // Logout of the app
+        private void ApplicationBarMenuItem_Click_1(object sender, EventArgs e)
+        {
+            App.auth = "";
+            NavigationService.Navigate(new Uri("/MainPage.xaml?logout=1", UriKind.Relative));
+
+        }
+
+
+        //Calling the about page
+        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
+        {
+            this.NavigationService.Navigate(new Uri("/about.xaml", UriKind.Absolute));
+        }
+
+        private void UpdateLiveTileWithCountAndImage()
+        {
+            // get application tile
+            ShellTile tile = ShellTile.ActiveTiles.First();
+            if (null != tile)
+            {
+                // create a new data for tile		
+                StandardTileData data = new StandardTileData();
+                // tile foreground data		
+                data.Count = objApp.albums.Count;
+                Random r = new Random();
+                int index = r.Next(objApp.albums.Count);
+                data.BackgroundImage = new Uri(objApp.albums[index].thumbnail, UriKind.Absolute);
+                index = r.Next(objApp.albums.Count);
+                data.BackBackgroundImage = new Uri(objApp.albums[index].thumbnail, UriKind.Absolute);
+                // update tile		
+                tile.Update(data);
+            }
         }
 
 

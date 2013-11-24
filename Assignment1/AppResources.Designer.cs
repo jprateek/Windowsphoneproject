@@ -70,6 +70,15 @@ namespace Assignment1 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to photoFrame.
+        /// </summary>
+        public static string appName {
+            get {
+                return ResourceManager.GetString("appName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SignIn.
         /// </summary>
         public static string btnSignIn {
@@ -151,7 +160,7 @@ namespace Assignment1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logon with ....
+        ///   Looks up a localized string similar to Logon with Google....
         /// </summary>
         public static string lblLogon {
             get {
@@ -228,6 +237,15 @@ namespace Assignment1 {
         public static string rPicasa {
             get {
                 return ResourceManager.GetString("rPicasa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1.0.0.0.
+        /// </summary>
+        public static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
     }

@@ -18,6 +18,9 @@ namespace Assignment1
     {
         private App app = App.Current as App;
 
+        //Image herf in case of direct call from live tile
+        private string imageHref = string.Empty;
+
         // Selected album title
         private string selectedAlbumTitle;
 
@@ -26,6 +29,8 @@ namespace Assignment1
 
         // GestureListener from ToolKit
         private GestureListener gestureListener;
+
+        double initialScale = 1d;
 
         public Photos()
         {
@@ -45,14 +50,6 @@ namespace Assignment1
 
             // Find selected image index from parameters
             IDictionary<string, string> parameters = this.NavigationContext.QueryString;
-            if (parameters.ContainsKey("SelectedIndex"))
-            {
-                app.selectedImageIndex = Int32.Parse(parameters["SelectedIndex"]);
-            }
-            else
-            {
-                app.selectedImageIndex = 0;
-            }
 
             // Find selected album name
             if (parameters.ContainsKey("SelectedAlbum"))
@@ -64,16 +61,45 @@ namespace Assignment1
                 selectedAlbumTitle = "No album name";
             }
 
+            if (parameters.ContainsKey("SelectedIndex"))
+            {
+                app.selectedImageIndex = Int32.Parse(parameters["SelectedIndex"]);
+                LoadImage();
+            }
+            else
+            {
+                app.selectedImageIndex = 0;
+            }
+
+            // Find selected album name
+            if (parameters.ContainsKey("SelectedImage"))
+            {
+                imageHref = parameters["SelectedImage"];
+                LoadImage(imageHref);
+                //Disable gesture handler
+                //gestureListener.DragCompleted -= new EventHandler<DragCompletedGestureEventArgs>(gestureListener_DragCompleted);
+            }
+
             // Load image from Google
-            LoadImage();
+            
         }
 
         private void LoadImage()
         {
-            // Show loading... animation
-           // ShowProgress = true;
             // Load a new image
             bitmapImage = new BitmapImage(new Uri(app.albumImages[app.selectedImageIndex].content, UriKind.RelativeOrAbsolute));
+            // Handle loading (hide Loading... animation)
+            bitmapImage.DownloadProgress += new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
+            // Loaded Image is image source in XAML
+            imgPhotos.Source = bitmapImage;
+        }
+
+        private void LoadImage(string href)
+        {
+            // Show loading... animation
+            // ShowProgress = true;
+            // Load a new image
+            bitmapImage = new BitmapImage(new Uri(href, UriKind.RelativeOrAbsolute));
             // Handle loading (hide Loading... animation)
             bitmapImage.DownloadProgress += new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
             // Loaded Image is image source in XAML
@@ -98,13 +124,19 @@ namespace Assignment1
             {
                 // previous image (or last if first is shown)
                 app.selectedImageIndex--;
-                if (app.selectedImageIndex < 0) app.selectedImageIndex = app.albumImages.Count - 1;
+                if (app.selectedImageIndex < 0)
+                {
+                    app.selectedImageIndex = app.albumImages.Count - 1;
+                }
             }
             else
             {
                 // next image (or first if last is shown)
                 app.selectedImageIndex++;
-                if (app.selectedImageIndex > (app.albumImages.Count - 1)) app.selectedImageIndex = 0;
+                if (app.selectedImageIndex > (app.albumImages.Count - 1))
+                {
+                    app.selectedImageIndex = 0;
+                }
             }
             // Load image from Google
             LoadImage();
@@ -115,7 +147,26 @@ namespace Assignment1
             this.NavigationService.Navigate(new Uri("/capture.xaml", UriKind.Relative));
         }
 
+        private void OnPinchStarted(object s, PinchStartedGestureEventArgs e)
+        {
+            initialScale = ((CompositeTransform)imgPhotos.RenderTransform).ScaleX;
+        }
 
+        private void OnPinchDelta(object s, PinchGestureEventArgs e)
+        {
+            var finger1 = e.GetPosition(imgPhotos, 0);
+            var finger2 = e.GetPosition(imgPhotos, 1);
+
+            var center = new Point(
+                (finger2.X + finger1.X) / 2 / imgPhotos.ActualWidth,
+                (finger2.Y + finger1.Y) / 2 / imgPhotos.ActualHeight);
+
+            imgPhotos.RenderTransformOrigin = center;
+
+            var transform = (CompositeTransform)imgPhotos.RenderTransform;
+            transform.ScaleX = initialScale * e.DistanceRatio;
+            transform.ScaleY = transform.ScaleX;
+        }
 
 
     }

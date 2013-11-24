@@ -12,18 +12,26 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Collections;
 using Microsoft.Phone.Tasks;
+using System.Windows.Media.Imaging;
+using System.IO;
+using Microsoft.Phone.Shell;
 
 namespace Assignment1
 {
     public partial class PhotosofAlbum : PhoneApplicationPage
     {
         App app = App.Current as App;
-        CameraCaptureTask cameraCaptureTask;
-        PhotoChooserTask photoChooserTask;
+       PhotoChooserTask photoChooserTask;
+       int AlbumIndex = -1;
+      
+       int photoCount = 0;
+        public delegate void UploadPhotoCallback(bool success, string message); 
+
 
         public PhotosofAlbum()
         {
             InitializeComponent();
+
             
         }
 
@@ -56,19 +64,46 @@ namespace Assignment1
                 PhotosofAlbmTitle.Text = app.albums[selectedIndex].title;
                 GetImages(selectedIndex);
             }
+
+            if (parameters.ContainsKey("href"))
+            {
+                string href = (string)parameters["href"];
+                //PhotosofAlbmTitle.Text = app.albums[selectedIndex].title;
+                GetImages(href);
+            }
+
             
-           
         }
 
         // Get the images for the selected album from google.
         private void GetImages(int selectedIndex)
         {
+            AlbumIndex = selectedIndex;
             // Show loading... animation
            // ShowProgress = true;
+            
+            //for debuging purpose
+            // MessageBox.Show(App.auth);
+            
             WebClient webClient = new WebClient();
+
             string auth = "GoogleLogin auth=" + App.auth;
             webClient.Headers[HttpRequestHeader.Authorization] = auth;
             Uri uri = new Uri(app.albums[selectedIndex].href, UriKind.Absolute);
+            //for debuging purpose
+           // MessageBox.Show(app.albums[selectedIndex].href);
+            webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(DownloadAlbumImages);
+            webClient.DownloadStringAsync(uri);
+        }
+
+        private void GetImages(string href)
+        {
+            WebClient webClient = new WebClient();
+            string auth = "GoogleLogin auth=" + App.auth;
+            webClient.Headers[HttpRequestHeader.Authorization] = auth;
+            Uri uri = new Uri(href, UriKind.Absolute);
+            //for debuging purpose
+           // MessageBox.Show(app.albums[selectedIndex].href);
             webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(DownloadAlbumImages);
             webClient.DownloadStringAsync(uri);
         }
@@ -86,6 +121,8 @@ namespace Assignment1
                 }
                 else
                 {
+                    //Getpicsdata(e);
+                    
                     // Deserialize JSON string to dynamic object
                     IDictionary<string, object> json = (IDictionary<string, object>)SimpleJson.DeserializeObject(e.Result);
                     // Feed object
@@ -99,10 +136,15 @@ namespace Assignment1
                     // Find image details from entries
                     for (int i = 0; i < entries.Count; i++)
                     {
+                        
                         // Create a new albumImage
                         MyAlbumImage albumImage = new MyAlbumImage();
                         // Image entry object
                         IDictionary<string, object> entry = (IDictionary<string, object>)entries[i];
+                        // Image id object
+                        IDictionary<string, object> id = (IDictionary<string, object>)entry["id"];
+                        // Get album title
+                        albumImage.id = (string)id["$t"];
                         // Image title object
                         IDictionary<string, object> title = (IDictionary<string, object>)entry["title"];
                         // Get album title
@@ -137,8 +179,11 @@ namespace Assignment1
                    // ShowProgress = false;
                     // Add albumImages to AlbumImagesListBox
                     listBoxPhotos.ItemsSource = app.albumImages;
+                    photoCount = entries.Count;
+                    UpdateTileIfExist();
+                    
                 }
-            }
+           }
             catch (WebException)
             {
                 MessageBox.Show(AppResources.errMsgPicasaServer1);
@@ -174,14 +219,229 @@ namespace Assignment1
         {
             if (e.TaskResult == TaskResult.OK)
             {
-                MessageBox.Show(e.ChosenPhoto.Length.ToString());
-
-                //Code to display the photo on the page in an image control named myImage.
-                //System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-                //bmp.SetSource(e.ChosenPhoto);
-                //myImage.Source = bmp;
+                //MessageBox.Show(e.ChosenPhoto.Length.ToString());
+                UploadNewPhoto(e.ChosenPhoto);
             }
         }
 
+        private void UploadNewPhoto(Stream stream)
+        {
+            const int BLOCK_SIZE = 4096;
+            string AuthToken = App.auth;
+            if (AlbumIndex != -1)
+            {
+                Uri uri = new Uri(app.albums[AlbumIndex].href, UriKind.Absolute);
+                WebClient wc = new WebClient();
+
+                wc.Headers[HttpRequestHeader.Authorization] = "GoogleLogin auth=" + AuthToken;
+                wc.Headers[HttpRequestHeader.ContentLength] = stream.Length.ToString();
+                wc.Headers[HttpRequestHeader.ContentType] = "image/jpeg";
+                wc.AllowReadStreamBuffering = true;
+                wc.AllowWriteStreamBuffering = true;
+
+
+                wc.OpenWriteCompleted += (s, args) =>
+                {
+                    using (BinaryReader br = new BinaryReader(stream))
+                    {
+                        using (BinaryWriter bw = new BinaryWriter(args.Result))
+                        {
+                            long bCount = 0;
+                            long fileSize = stream.Length;
+                            byte[] bytes = new byte[BLOCK_SIZE];
+                            do
+                            {
+                                bytes = br.ReadBytes(BLOCK_SIZE);
+                                bCount += bytes.Length;
+                                bw.Write(bytes);
+                            }
+                            while (bCount < fileSize);
+                        }
+                    }
+                };
+                // Uploading is complete             
+                wc.WriteStreamClosed += (s, args) =>
+                {
+                    MessageBox.Show("Photo Uploaded");
+                    GetImages(AlbumIndex);
+                  //  NavigationService.Navigate(new Uri(string.Format("/PhotosofAlbum.xaml?Refresh=true", UriKind.Relative)));
+                };
+
+
+                wc.OpenWriteAsync(uri, "POST");
+
+            }
+        }
+        
+        private void Tile_Click(object sender, RoutedEventArgs e)
+        {
+            int index = -1;
+            MyAlbumImage item = null; 
+            if (sender is MenuItem) 
+            { 
+                ListBoxItem selectedListBoxItem = listBoxPhotos.ItemContainerGenerator.ContainerFromItem( 
+                    (sender as MenuItem).DataContext) as ListBoxItem; 
+                if (selectedListBoxItem != null) 
+                { 
+                    index = listBoxPhotos.ItemContainerGenerator.IndexFromContainer(selectedListBoxItem); 
+                    if (index >= 0 && index < listBoxPhotos.Items.Count()) 
+                    {
+                        item = listBoxPhotos.Items[index] as MyAlbumImage;
+                    } 
+                } 
+            }
+            if (item != null)
+            {
+                string navigationUri = "/Photos.xaml?SelectedImage=" + item.content;
+                
+                ShellTile Tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains(navigationUri));
+                if (Tile == null)
+                {
+                    // create a new secondary tile
+                    StandardTileData data = new StandardTileData();
+                    // tile foreground data
+                    data.Title = AppResources.appName; 
+                    
+                  
+                    data.BackgroundImage = new Uri(item.thumbnail, UriKind.Absolute);
+                    data.BackBackgroundImage = new Uri(item.thumbnail, UriKind.Absolute);
+                    data.BackTitle = AppResources.appName;
+                    // create a new tile for this Second Page
+                    ShellTile.Create(new Uri(navigationUri, UriKind.Relative), data);
+                }
+            }
+        }
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+      
+            int index = -1;
+            MyAlbumImage item = null; 
+            if (sender is MenuItem) 
+            { 
+                ListBoxItem selectedListBoxItem = listBoxPhotos.ItemContainerGenerator.ContainerFromItem( 
+                    (sender as MenuItem).DataContext) as ListBoxItem; 
+                if (selectedListBoxItem != null) 
+                { 
+                    index = listBoxPhotos.ItemContainerGenerator.IndexFromContainer(selectedListBoxItem); 
+                    if (index >= 0 && index < listBoxPhotos.Items.Count()) 
+                    {
+                        item = listBoxPhotos.Items[index] as MyAlbumImage;
+                    } 
+                } 
+            } 
+            if (item != null)       
+            { 
+                string id = item.id;
+                int sindex = id.IndexOf("?alt");
+                string sURL = id.Substring(0, sindex);
+                sURL = sURL.Replace("entry", "media");
+              //  sURL = sURL.Replace("http", "https");
+                string AuthToken = App.auth;
+                Uri uri = new Uri(sURL, UriKind.Absolute);
+                try
+                {
+                    var wc = new WebClient();
+                    wc.Headers[HttpRequestHeader.Authorization] = "GoogleLogin auth=" + AuthToken;
+                    wc.Headers[HttpRequestHeader.ContentLength] = "0";
+                    wc.Headers[HttpRequestHeader.IfMatch] = "*";
+                    wc.AllowReadStreamBuffering = false;
+                    wc.AllowWriteStreamBuffering = false;
+                    wc.UploadStringCompleted += new UploadStringCompletedEventHandler(wc_UploadStringCompleted);
+                    wc.UploadStringAsync(uri,"DELETE", string.Empty);
+                        
+                }
+                catch (Exception e2)
+                {
+                    MessageBox.Show(e2.Message);
+                }
+            }
+        }
+
+        void wc_UploadStringCompleted(object sender, UploadStringCompletedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Result))
+            {
+                MessageBox.Show("Your photo has been deleted");
+                GetImages(AlbumIndex);
+                //Remove the photo from the list manually
+            }
+            else
+            {
+                MessageBox.Show("Sorry, we could not delete the photo now. Please try again later.");
+            }
+        }
+        
+        // Logout from the app
+        private void ApplicationBarMenuItem_Click_1(object sender, EventArgs e)
+        {
+            App.auth = "";
+            NavigationService.Navigate(new Uri("/MainPage.xaml?logout=1", UriKind.Relative));
+        }
+
+   
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+             //NavigationService.RemoveBackEntry();
+            //base.OnNavigatedTo(e);
+        }
+
+        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
+        {
+            // check if secondary tile is already made and pinned
+            if (AlbumIndex != -1)
+            {
+                string albumID = app.albums[AlbumIndex].title;
+            }
+            string navigationUri = "/PhotosofAlbum.xaml?SelectedIndex=" + app.albums[AlbumIndex].href;
+
+            ShellTile Tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains(navigationUri));
+            if (Tile == null) 
+            {
+                Random r = new Random();
+                // create a new secondary tile
+                StandardTileData data = new StandardTileData();
+                // tile foreground data
+                data.Title = app.albums[AlbumIndex].title;
+                
+                data.BackTitle = "photo frame";
+                //data.BackContent = photoCount + " photos in this album";
+                data.BackgroundImage = new Uri(app.albums[AlbumIndex].thumbnail.Replace("JPG", "jpg"), UriKind.Absolute);
+                data.Count = photoCount;
+                int index = r.Next(photoCount);
+                data.BackBackgroundImage = new Uri(app.albumImages[index].thumbnail.Replace("JPG", "jpg"), UriKind.Absolute);
+                // create a new tile for this Second Page
+                ShellTile.Create(new Uri(navigationUri, UriKind.Relative), data);
+            }
+        }
+
+        private void UpdateTileIfExist()
+        {
+            // check if secondary tile is already made and pinned
+            if (AlbumIndex != -1)
+            {
+                string albumID = app.albums[AlbumIndex].title;
+            }
+            string navigationUri = "/PhotosofAlbum.xaml?SelectedIndex=" + app.albums[AlbumIndex].href;
+
+            
+            // Find the Tile we want to update.
+            ShellTile TileToFind = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains(navigationUri));
+
+            // If the Tile was found, then update the background image.
+            if (TileToFind != null)
+            {
+                Random r = new Random();
+                int index = r.Next(photoCount);
+                    
+                StandardTileData NewTileData = new StandardTileData
+                {
+                    //BackContent = photoCount + " photos in this album",
+                    Count = photoCount,
+                    BackBackgroundImage = new Uri(app.albumImages[index].thumbnail.Replace("JPG", "jpg"), UriKind.Absolute)
+                };
+
+                TileToFind.Update(NewTileData);
+            }
+        }
     }
 }

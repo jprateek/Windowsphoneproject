@@ -130,7 +130,7 @@
     <value>Unohtuiko salasana?</value>
   </data>
   <data name="lblLogon" xml:space="preserve">
-    <value>Kirjaudu ...</value>
+    <value>kirjaudut sisään Google...</value>
   </data>
   <data name="lblPassword" xml:space="preserve">
     <value>Salasana</value>
@@ -154,7 +154,7 @@
     <value>You have successfully logged on with</value>
   </data>
   <data name="aboutapp" xml:space="preserve">
-    <value>about</value>
+    <value>suhteen</value>
   </data>
   <data name="camera" xml:space="preserve">
     <value>camera</value>
@@ -173,5 +173,11 @@
   </data>
   <data name="logout" xml:space="preserve">
     <value>logout</value>
+  </data>
+  <data name="appName" xml:space="preserve">
+    <value>photoFrame</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>1.0.0.0</value>
   </data>
 </root>

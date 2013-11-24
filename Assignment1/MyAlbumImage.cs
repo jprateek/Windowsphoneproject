@@ -14,6 +14,7 @@ namespace Assignment1
     //This class is used to store image information like image title, content url, size and thumbnail url
     public class MyAlbumImage
     {
+        public string id { get; set; } 
         public string title { get; set; }        
         public string content { get; set; }
         public string width { get; set; }

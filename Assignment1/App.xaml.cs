@@ -24,7 +24,9 @@ namespace Assignment1
         public PhoneApplicationFrame RootFrame { get; private set; }
        
         
-        static public  string username;
+        static public  string username = "";
+        static public string password = "";
+        static public bool isSaveDetails = false;
         static public string auth;
 
         public MyAlbumCollection albums = new MyAlbumCollection();
@@ -80,12 +82,37 @@ namespace Assignment1
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            if (e.IsApplicationInstancePreserved)
+            {
+                //do nothing
+            }
+            else
+            {
+
+                var store = new TransientDataStorage();
+                username = store.Restore<string>("username");
+                password = store.Restore<string>("password");
+                auth = store.Restore<string>("auth");
+                albums = store.Restore<MyAlbumCollection>("albums");
+                albumImages = store.Restore<MyAllalbumimages>("albumImages");
+                selectedImageIndex =  store.Restore<int>("selectedImageIndex");
+                selectedAlbumIndex = store.Restore<int>("selectedAlbumIndex");
+                
+            }
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            var store = new TransientDataStorage();
+            store.Backup("username", username);
+            store.Backup("password", password);
+            store.Backup("auth", auth);
+            store.Backup("albums", albums);
+            store.Backup("albumImages",albumImages);
+            store.Backup("selectedImageIndex", selectedImageIndex);
+            store.Backup("selectedAlbumIndex",selectedAlbumIndex);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -114,13 +141,7 @@ namespace Assignment1
             }
         }
 
-        //Code for calling the about page from the app bar.
-        private void appBar_Click(object sender, EventArgs e)
-        {
-           
-           // NavigationService.Navigate(new Uri("/about.xaml", UriKind.Relative));
-        }
-
+       
         #region Phone application initialization
 
         // Avoid double-initialization

@@ -130,7 +130,7 @@
     <value>Forgot Password?</value>
   </data>
   <data name="lblLogon" xml:space="preserve">
-    <value>Logon with ...</value>
+    <value>Logon with Google...</value>
   </data>
   <data name="lblPassword" xml:space="preserve">
     <value>Password</value>
@@ -173,5 +173,11 @@
   </data>
   <data name="logout" xml:space="preserve">
     <value>logout</value>
+  </data>
+  <data name="appName" xml:space="preserve">
+    <value>photoFrame</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>1.0.0.0</value>
   </data>
 </root>

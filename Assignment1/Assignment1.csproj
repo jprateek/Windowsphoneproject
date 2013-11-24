@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleJson.cs" />
+    <Compile Include="TransientDataStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -139,6 +140,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\reel7.jpg" />
+    <Content Include="Images\appbar.upload.rest.png" />
     <Content Include="Images\Camera.bmp" />
     <Content Include="Images\upload.bmp" />
     <Content Include="SplashScreenImage.jpg" />
