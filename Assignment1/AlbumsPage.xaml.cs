@@ -19,7 +19,7 @@ namespace Assignment1
     public partial class AlbumsPage : PhoneApplicationPage
     {
         private App objApp = App.Current as App;
-        //string albumName = "Album2";
+        
         public AlbumsPage()
         {
             InitializeComponent();
@@ -30,8 +30,7 @@ namespace Assignment1
             if (listBoxAlbums.SelectedIndex == -1) return;
             objApp.selectedAlbumIndex = listBoxAlbums.SelectedIndex;
             this.NavigationService.Navigate(new Uri("/PhotosofAlbum.xaml?SelectedIndex=" + listBoxAlbums.SelectedIndex, UriKind.Relative));
-            //NavigationService.Navigate(new Uri("/PhotosofAlbum.xaml?AlbumName=" + albumName, UriKind.Relative));
-
+            
         }
 
         private void GetAlbums()
@@ -45,7 +44,7 @@ namespace Assignment1
         }
         
 
-        // Get on the Albums Page and removeing the back entry for logon page.
+        // Get on the Albums Page and removing the back entry for logon page.
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             NavigationService.RemoveBackEntry();
@@ -130,7 +129,7 @@ namespace Assignment1
 
         private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/capture.xaml", UriKind.Relative));
+            //this.NavigationService.Navigate(new Uri("/capture.xaml", UriKind.Relative));
         }
 
         // Logout of the app
@@ -145,7 +144,7 @@ namespace Assignment1
         //Calling the about page
         private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/about.xaml", UriKind.Absolute));
+            this.NavigationService.Navigate(new Uri("/about.xaml", UriKind.Relative));
         }
 
         private void UpdateLiveTileWithCountAndImage()

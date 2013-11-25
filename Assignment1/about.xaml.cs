@@ -23,6 +23,9 @@ namespace Assignment1
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             //String strAbout = " Version 1.0
+            
+            textBlock1.Text = string.Format(AppResources.Version +
+                                                    "{0}" + "{0}" + AppResources.appDetails, Environment.NewLine);
         }
     }
 }

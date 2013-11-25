@@ -180,12 +180,12 @@ namespace Assignment1
                 // create a new data for tile		
                 StandardTileData data = new StandardTileData();		
                 // tile foreground data		
-                data.Title = "photo frame";		
+                data.Title = AppResources.appName;		
                 data.BackgroundImage = new Uri("/Images/reel7.jpg", UriKind.Relative);		
                 data.Count = 0;		
                 // to make tile flip add data to background also		
-                data.BackTitle = "photo frame";
-                data.BackContent = "New photos will be notified here";		
+                data.BackTitle = AppResources.appName;
+                data.BackContent = AppResources.TileNotification;		
                 // update tile		
                 tile.Update(data);	
             }

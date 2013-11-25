@@ -27,13 +27,13 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBlock Height="60" HorizontalAlignment="Left" Margin="24,29,0,0" Name="textBlock1" Text="{Binding Path=AppResources.lblLogon, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="389" FontWeight="Bold" FontSize="26" Foreground="MistyRose" FontStyle="Italic" />
-            <TextBox Height="75" HorizontalAlignment="Left" Margin="132,161,0,0" Name="txtEmail" VerticalAlignment="Top" Width="327" FontStyle="Italic" Background="MistyRose" Text="prateekjain11@gmail.com" />
-            <Button Content="SignIn" Height="84" HorizontalAlignment="Left" Margin="292,401,0,0" Name="btnLogon" VerticalAlignment="Top" Width="164" Foreground="White" Background="Brown" BorderBrush="White" Click="btnLogon_Click"></Button>
+            <TextBlock Height="60" HorizontalAlignment="Left" Margin="24,29,0,0" Name="textBlock1" Text="{Binding Path=AppResources.lblLogon, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="389" FontWeight="Bold" FontSize="26"  FontStyle="Italic" />
+            <TextBox Height="75" HorizontalAlignment="Left" Margin="132,161,0,0" Name="txtEmail" VerticalAlignment="Top" Width="327" FontStyle="Italic" Background="MistyRose" />
+            <Button Content="{Binding Path=AppResources.btnSignIn, Source={StaticResource LocalizedStrings}}" Height="84" HorizontalAlignment="Left" Margin="292,401,0,0" Name="btnLogon" VerticalAlignment="Top" Width="164" Foreground="White" Background="Brown" BorderBrush="White" Click="btnLogon_Click"></Button>
             <CheckBox Content="Save your credentials" Height="74" HorizontalAlignment="Left" Margin="125,334,0,0" Name="chkSave" VerticalAlignment="Top" Width="313" Background="#FFDAA5A5" Foreground="Brown" />
-            <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,175,0,0" Name="lblEmail" Text="Email" VerticalAlignment="Top" Width="125" />
-            <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,274,0,0" Name="lblPwd" Text="Password" VerticalAlignment="Top" Width="125" />
-            <PasswordBox Height="72" HorizontalAlignment="Left" Margin="133,262,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="326" Background="MistyRose" Password="Jain1234" />
+            <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,175,0,0" Name="lblEmail" Text="{Binding Path=AppResources.lblEmail, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="125" />
+            <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,274,0,0" Name="lblPwd" Text="{Binding Path=AppResources.lblPassword, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="125" />
+            <PasswordBox Height="72" HorizontalAlignment="Left" Margin="133,262,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="326" Background="MistyRose" />
         </Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Assignment1;component/Images/reel7.jpg" />

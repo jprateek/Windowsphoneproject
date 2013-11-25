@@ -68,7 +68,7 @@ namespace Assignment1
             if (parameters.ContainsKey("href"))
             {
                 string href = (string)parameters["href"];
-                //PhotosofAlbmTitle.Text = app.albums[selectedIndex].title;
+                
                 GetImages(href);
             }
 
@@ -121,7 +121,7 @@ namespace Assignment1
                 }
                 else
                 {
-                    //Getpicsdata(e);
+                   
                     
                     // Deserialize JSON string to dynamic object
                     IDictionary<string, object> json = (IDictionary<string, object>)SimpleJson.DeserializeObject(e.Result);
@@ -262,9 +262,9 @@ namespace Assignment1
                 // Uploading is complete             
                 wc.WriteStreamClosed += (s, args) =>
                 {
-                    MessageBox.Show("Photo Uploaded");
+                    MessageBox.Show(AppResources.photouploaded);
                     GetImages(AlbumIndex);
-                  //  NavigationService.Navigate(new Uri(string.Format("/PhotosofAlbum.xaml?Refresh=true", UriKind.Relative)));
+                  
                 };
 
 
@@ -335,8 +335,9 @@ namespace Assignment1
                 int sindex = id.IndexOf("?alt");
                 string sURL = id.Substring(0, sindex);
                 sURL = sURL.Replace("entry", "media");
-              //  sURL = sURL.Replace("http", "https");
+              
                 string AuthToken = App.auth;
+              
                 Uri uri = new Uri(sURL, UriKind.Absolute);
                 try
                 {
@@ -361,13 +362,13 @@ namespace Assignment1
         {
             if (string.IsNullOrEmpty(e.Result))
             {
-                MessageBox.Show("Your photo has been deleted");
+                MessageBox.Show(AppResources.deletephoto);
                 GetImages(AlbumIndex);
-                //Remove the photo from the list manually
+               
             }
             else
             {
-                MessageBox.Show("Sorry, we could not delete the photo now. Please try again later.");
+                MessageBox.Show(AppResources.deleteError);
             }
         }
         
@@ -403,12 +404,13 @@ namespace Assignment1
                 // tile foreground data
                 data.Title = app.albums[AlbumIndex].title;
                 
-                data.BackTitle = "photo frame";
-                //data.BackContent = photoCount + " photos in this album";
+                data.BackTitle = AppResources.appName;
+                
                 data.BackgroundImage = new Uri(app.albums[AlbumIndex].thumbnail.Replace("JPG", "jpg"), UriKind.Absolute);
                 data.Count = photoCount;
                 int index = r.Next(photoCount);
                 data.BackBackgroundImage = new Uri(app.albumImages[index].thumbnail.Replace("JPG", "jpg"), UriKind.Absolute);
+                
                 // create a new tile for this Second Page
                 ShellTile.Create(new Uri(navigationUri, UriKind.Relative), data);
             }

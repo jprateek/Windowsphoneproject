@@ -16,6 +16,9 @@ namespace Assignment1
 {
     public partial class Photos : PhoneApplicationPage
     {
+        bool isTapped = false;
+
+
         private App app = App.Current as App;
 
         //Image herf in case of direct call from live tile
@@ -162,10 +165,34 @@ namespace Assignment1
                 (finger2.Y + finger1.Y) / 2 / imgPhotos.ActualHeight);
 
             imgPhotos.RenderTransformOrigin = center;
+            if (initialScale >= 1.0 )
+            {
+                var transform = (CompositeTransform)imgPhotos.RenderTransform;
+                if (initialScale * e.DistanceRatio >= 1.0)
+                {
+                    transform.ScaleX = initialScale * e.DistanceRatio;
+                    transform.ScaleY = transform.ScaleX;
+                }
+            }
+        }
 
+        private void imgPhotos_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
             var transform = (CompositeTransform)imgPhotos.RenderTransform;
-            transform.ScaleX = initialScale * e.DistanceRatio;
-            transform.ScaleY = transform.ScaleX;
+            if (!isTapped)
+            {
+                //Was not tapped, zoom in now
+                transform.ScaleX = 1.5;
+                transform.ScaleY = 1.5;
+                isTapped = !isTapped;
+            }
+            else
+            {
+                //Was tapped, Zoom out now
+                transform.ScaleX = 1.0;
+                transform.ScaleY = 1.0;
+                isTapped = !isTapped;
+            }
         }
 
 

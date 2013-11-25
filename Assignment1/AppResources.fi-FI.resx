@@ -178,6 +178,30 @@
     <value>photoFrame</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>1.0.0.0</value>
+    <value>Version 1.0.0.0</value>
+  </data>
+  <data name="albumCount" xml:space="preserve">
+    <value>photos in this album</value>
+  </data>
+  <data name="albums" xml:space="preserve">
+    <value>albums</value>
+  </data>
+  <data name="appDetails" xml:space="preserve">
+    <value>photoFrame is a Windows Phone application which will allow the user to browse Picasa albums on his/her Windows Phone (using the JSON) and also allows to take pictures and upload them to Picasa</value>
+  </data>
+  <data name="deleteError" xml:space="preserve">
+    <value>Sorry, we could not delete the photo now. Please try again later.</value>
+  </data>
+  <data name="deletephoto" xml:space="preserve">
+    <value>Your photo has been deleted</value>
+  </data>
+  <data name="photouploaded" xml:space="preserve">
+    <value>Photo Uploaded</value>
+  </data>
+  <data name="TileNotification" xml:space="preserve">
+    <value>New photos will be notified here</value>
+  </data>
+  <data name="upload" xml:space="preserve">
+    <value>upload a photo</value>
   </data>
 </root>

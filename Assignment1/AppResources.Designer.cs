@@ -70,6 +70,33 @@ namespace Assignment1 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to photos in this album.
+        /// </summary>
+        public static string albumCount {
+            get {
+                return ResourceManager.GetString("albumCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to albums.
+        /// </summary>
+        public static string albums {
+            get {
+                return ResourceManager.GetString("albums", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to photoFrame is a Windows Phone application which will allow the user to browse Picasa albums on his/her Windows Phone (using the JSON) and also allows to take pictures and upload them to Picasa.
+        /// </summary>
+        public static string appDetails {
+            get {
+                return ResourceManager.GetString("appDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to photoFrame.
         /// </summary>
         public static string appName {
@@ -111,6 +138,24 @@ namespace Assignment1 {
         public static string chkSaveCred {
             get {
                 return ResourceManager.GetString("chkSaveCred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, we could not delete the photo now. Please try again later..
+        /// </summary>
+        public static string deleteError {
+            get {
+                return ResourceManager.GetString("deleteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your photo has been deleted.
+        /// </summary>
+        public static string deletephoto {
+            get {
+                return ResourceManager.GetString("deletephoto", resourceCulture);
             }
         }
         
@@ -223,6 +268,15 @@ namespace Assignment1 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Photo Uploaded.
+        /// </summary>
+        public static string photouploaded {
+            get {
+                return ResourceManager.GetString("photouploaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flickr.
         /// </summary>
         public static string rFlickr {
@@ -241,7 +295,25 @@ namespace Assignment1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.0.0.0.
+        ///   Looks up a localized string similar to New photos will be notified here.
+        /// </summary>
+        public static string TileNotification {
+            get {
+                return ResourceManager.GetString("TileNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to upload a photo.
+        /// </summary>
+        public static string upload {
+            get {
+                return ResourceManager.GetString("upload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version 1.0.0.0.
         /// </summary>
         public static string Version {
             get {

@@ -73,7 +73,6 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="upload a photo" Click="ApplicationBarMenuItem_Click" />
                 <shell:ApplicationBarMenuItem Text="logout" Click="ApplicationBarMenuItem_Click_1" />
-                <shell:ApplicationBarMenuItem Text="pin to start" Click="ApplicationBarMenuItem_Click_2"  />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
