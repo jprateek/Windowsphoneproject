@@ -6,7 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -30,7 +30,7 @@
             <TextBlock Height="60" HorizontalAlignment="Left" Margin="24,29,0,0" Name="textBlock1" Text="{Binding Path=AppResources.lblLogon, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="389" FontWeight="Bold" FontSize="26"  FontStyle="Italic" />
             <TextBox Height="75" HorizontalAlignment="Left" Margin="132,161,0,0" Name="txtEmail" VerticalAlignment="Top" Width="327" FontStyle="Italic" Background="MistyRose" />
             <Button Content="{Binding Path=AppResources.btnSignIn, Source={StaticResource LocalizedStrings}}" Height="84" HorizontalAlignment="Left" Margin="292,401,0,0" Name="btnLogon" VerticalAlignment="Top" Width="164" Foreground="White" Background="Brown" BorderBrush="White" Click="btnLogon_Click"></Button>
-            <CheckBox Content="Save your credentials" Height="74" HorizontalAlignment="Left" Margin="125,334,0,0" Name="chkSave" VerticalAlignment="Top" Width="313" Background="#FFDAA5A5" Foreground="Brown" />
+            <CheckBox Content="{Binding Path=AppResources.chkSaveCred, Source={StaticResource LocalizedStrings}}" Height="74" HorizontalAlignment="Left" Margin="125,334,0,0" Name="chkSave" VerticalAlignment="Top" Width="313" Background="#FFDAA5A5" Foreground="Brown" />
             <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,175,0,0" Name="lblEmail" Text="{Binding Path=AppResources.lblEmail, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="125" />
             <TextBlock FontSize="26" FontStyle="Italic" FontWeight="Bold" Foreground="Crimson" Height="47" HorizontalAlignment="Left" Margin="6,274,0,0" Name="lblPwd" Text="{Binding Path=AppResources.lblPassword, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" Width="125" />
             <PasswordBox Height="72" HorizontalAlignment="Left" Margin="133,262,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="326" Background="MistyRose" />
@@ -40,7 +40,7 @@
         </Grid.Background>
     </Grid>
  
-    <!--ApplicationBar for the app-->
+    <!--ApplicationBar for the app>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             
@@ -49,6 +49,6 @@
                 
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
 
 </phone:PhoneApplicationPage>

@@ -11,10 +11,15 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="728" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="True">
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True" IsVisible="True" />
+    </shell:SystemTray.ProgressIndicator>
+
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -46,12 +51,12 @@
                     <DataTemplate>
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Vertical">
-                                <Image delay:LowProfileImageLoader.UriSource="{Binding thumbnail}" Width="72" Height="54"/>
+                                <Image delay:LowProfileImageLoader.UriSource="{Binding thumbnail}" Width="140" Height="140"/>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu IsZoomEnabled="True" x:Name="ContextMenu" >
-                                        <toolkit:MenuItem x:Name="delete" Header="delete" Click="delete_Click" 
+                                        <toolkit:MenuItem x:Name="delete" Header="{Binding Path=AppResources.del, Source={StaticResource LocalizedStrings}}" Click="delete_Click" 
                                                           Tag="{Binding id}"/>
-                                        <toolkit:MenuItem x:Name="tile" Header="pin to start" Click="Tile_Click" Tag="{Binding id}"/>
+                                        <toolkit:MenuItem x:Name="tile" Header="{Binding Path=AppResources.tilepin, Source={StaticResource LocalizedStrings}}" Click="Tile_Click" Tag="{Binding id}"/>
                                     </toolkit:ContextMenu>
                                     
                                 </toolkit:ContextMenuService.ContextMenu>
@@ -65,16 +70,16 @@
     </Grid>
 
 
-     <!--ApplicationBar for the app>-->
+     <!--ApplicationBar for the app>
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar.upload.rest.png" Text="Camera" Click="ApplicationBarIconButton_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.upload.rest.png" Text="Upload" Click="ApplicationBarIconButton_Click" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="upload a photo" Click="ApplicationBarMenuItem_Click" />
                 <shell:ApplicationBarMenuItem Text="logout" Click="ApplicationBarMenuItem_Click_1" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
 
 </phone:PhoneApplicationPage>

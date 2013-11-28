@@ -30,8 +30,29 @@ namespace Assignment1
         public MainPage()
         {
             InitializeComponent();
+            Loaded += MainPage_Loaded;
+
             appSettings = IsolatedStorageSettings.ApplicationSettings;
         }
+
+
+        void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            CreateApplicationBar();
+        }
+
+        // Creating the localized app bar
+        private void CreateApplicationBar()
+        {
+            ApplicationBar = new ApplicationBar();
+
+            
+            var appBarMenuAbout = new ApplicationBarMenuItem(AppResources.aboutapp);
+            appBarMenuAbout.Click += appBar_Click;
+            ApplicationBar.MenuItems.Add(appBarMenuAbout);
+        }
+
+
 
         //Checking if user has entered a valid emailid.
         private bool IsValidEmail(String txtEmail)

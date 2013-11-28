@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Windows.Media.Imaging;
+using Microsoft.Phone.Shell;
 
 namespace Assignment1
 {
@@ -38,13 +39,17 @@ namespace Assignment1
         public Photos()
         {
             InitializeComponent();
-
+           
             // Initialize GestureListener
             gestureListener = GestureService.GetGestureListener(ContentPanel);
             // Handle Dragging (to show next or previous image from Album)
             gestureListener.DragCompleted += new EventHandler<DragCompletedGestureEventArgs>(gestureListener_DragCompleted);
             // app.selectedImageIndex = 0;
+
         }
+
+       
+
 
         // Navigated to Photos page
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -80,7 +85,7 @@ namespace Assignment1
                 imageHref = parameters["SelectedImage"];
                 LoadImage(imageHref);
                 //Disable gesture handler
-                //gestureListener.DragCompleted -= new EventHandler<DragCompletedGestureEventArgs>(gestureListener_DragCompleted);
+                gestureListener.DragCompleted -= new EventHandler<DragCompletedGestureEventArgs>(gestureListener_DragCompleted);
             }
 
             // Load image from Google
@@ -92,33 +97,23 @@ namespace Assignment1
             // Load a new image
             bitmapImage = new BitmapImage(new Uri(app.albumImages[app.selectedImageIndex].content, UriKind.RelativeOrAbsolute));
             // Handle loading (hide Loading... animation)
-            bitmapImage.DownloadProgress += new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
+           // bitmapImage.DownloadProgress += new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
             // Loaded Image is image source in XAML
             imgPhotos.Source = bitmapImage;
+          
         }
 
         private void LoadImage(string href)
         {
-            // Show loading... animation
-            // ShowProgress = true;
             // Load a new image
             bitmapImage = new BitmapImage(new Uri(href, UriKind.RelativeOrAbsolute));
-            // Handle loading (hide Loading... animation)
-            bitmapImage.DownloadProgress += new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
+            
             // Loaded Image is image source in XAML
             imgPhotos.Source = bitmapImage;
         }
 
-        // Image is loaded from Google
-        void bitmapImage_DownloadProgress(object sender, DownloadProgressEventArgs e)
-        {
-            // Hide loading... animation
-            //ShowProgress = false;
-            // Disable LoadingListener for this image
-            bitmapImage.DownloadProgress -= new EventHandler<DownloadProgressEventArgs>(bitmapImage_DownloadProgress);
-           
-        }
-
+      
+      
         // Gesture - Drag is complete
         void gestureListener_DragCompleted(object sender, DragCompletedGestureEventArgs e)
         {
@@ -147,7 +142,7 @@ namespace Assignment1
 
         private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/capture.xaml", UriKind.Relative));
+           
         }
 
         private void OnPinchStarted(object s, PinchStartedGestureEventArgs e)

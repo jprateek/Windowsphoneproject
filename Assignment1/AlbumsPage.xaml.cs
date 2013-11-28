@@ -13,6 +13,9 @@ using Microsoft.Phone.Controls;
 using System.Collections;
 using Microsoft.Phone.Shell;
 
+
+// Refered the API from https://developers.google.com/picasa-web/docs/2.0/developers_guide_protocol
+
 namespace Assignment1
 {
     
@@ -23,7 +26,28 @@ namespace Assignment1
         public AlbumsPage()
         {
             InitializeComponent();
+            Loaded += AlbumsPage_Loaded;
         }
+
+        void AlbumsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            CreateApplicationBar();
+        }
+
+        // Creating localized app bar
+        private void CreateApplicationBar()
+        {
+            ApplicationBar = new ApplicationBar();
+
+
+            var appBarMenuAbout = new ApplicationBarMenuItem(AppResources.aboutapp);
+            var appBarMenuLogout = new ApplicationBarMenuItem(AppResources.logout);
+            appBarMenuAbout.Click += about_Click;
+            appBarMenuLogout.Click += logout_Click;
+            ApplicationBar.MenuItems.Add(appBarMenuAbout);
+            ApplicationBar.MenuItems.Add(appBarMenuLogout);
+        }
+
 
         private void listBoxAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -54,6 +78,7 @@ namespace Assignment1
             GetAlbums();
         }
 
+        // Code refered from http://developer.nokia.com/Community/Wiki/Picasa_Image_Gallery_with_JSON_in_Window_Phone
         public void DownloadAlbums(object sender, DownloadStringCompletedEventArgs e)
         {
             try
@@ -133,7 +158,7 @@ namespace Assignment1
         }
 
         // Logout of the app
-        private void ApplicationBarMenuItem_Click_1(object sender, EventArgs e)
+        private void logout_Click(object sender, EventArgs e)
         {
             App.auth = "";
             NavigationService.Navigate(new Uri("/MainPage.xaml?logout=1", UriKind.Relative));
@@ -142,7 +167,7 @@ namespace Assignment1
 
 
         //Calling the about page
-        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
+        private void about_Click(object sender, EventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/about.xaml", UriKind.Relative));
         }

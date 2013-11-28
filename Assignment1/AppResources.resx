@@ -204,4 +204,16 @@
   <data name="upload" xml:space="preserve">
     <value>upload a photo</value>
   </data>
+  <data name="showdelete" xml:space="preserve">
+    <value>Deleting</value>
+  </data>
+  <data name="showupload" xml:space="preserve">
+    <value>Uploading</value>
+  </data>
+  <data name="del" xml:space="preserve">
+    <value>delete</value>
+  </data>
+  <data name="tilepin" xml:space="preserve">
+    <value>pin to start</value>
+  </data>
 </root>

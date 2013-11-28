@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using Microsoft.Phone.Shell;
 
+// Refered the API from https://developers.google.com/picasa-web/docs/2.0/developers_guide_protocol
+
 namespace Assignment1
 {
     public partial class PhotosofAlbum : PhoneApplicationPage
@@ -31,8 +33,42 @@ namespace Assignment1
         public PhotosofAlbum()
         {
             InitializeComponent();
+            Loaded += PhotosofAlbum_Loaded;            
+        }
 
+        void PhotosofAlbum_Loaded(object sender, RoutedEventArgs e)
+        {
+            SystemTray.ProgressIndicator = new ProgressIndicator();
+            CreateApplicationBar();
+        }
+
+        // Creating localized app bar
+        private void CreateApplicationBar()
+        {
+            ApplicationBar = new ApplicationBar();
+
+            //Creating the appbar menu Icon
+            var appBarButtonUpload = new ApplicationBarIconButton(new Uri("/Images/appbar.upload.rest.png", UriKind.Relative)) 
+                                         { Text = AppResources.upload };
+            appBarButtonUpload.Click += Upload_Click;
+            ApplicationBar.Buttons.Add(appBarButtonUpload);
+
+            //Creating the appbar menu
+            var appBarMenuUpload = new ApplicationBarMenuItem(AppResources.upload);
+            var appBarMenuLogout = new ApplicationBarMenuItem(AppResources.logout);
+
+            appBarMenuUpload.Click += Upload_Click;
+            appBarMenuLogout.Click += logout_Click;
             
+            ApplicationBar.MenuItems.Add(appBarMenuUpload);
+            ApplicationBar.MenuItems.Add(appBarMenuLogout);
+        }
+
+        //setting the progress Indicator
+        private static void SetProgessIndicator(bool isVisible)
+        {
+            SystemTray.ProgressIndicator.IsIndeterminate = isVisible;
+            SystemTray.ProgressIndicator.IsVisible = isVisible;
         }
 
         private void listBoxPhotos_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -47,6 +83,7 @@ namespace Assignment1
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e); 	
+
             
             // While navigating back from Pictures page
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)	
@@ -79,8 +116,9 @@ namespace Assignment1
         private void GetImages(int selectedIndex)
         {
             AlbumIndex = selectedIndex;
-            // Show loading... animation
-           // ShowProgress = true;
+
+            //Show progress Indicator
+            SetProgessIndicator(true);
             
             //for debuging purpose
             // MessageBox.Show(App.auth);
@@ -108,7 +146,8 @@ namespace Assignment1
             webClient.DownloadStringAsync(uri);
         }
 
-
+        // Code refered from http://developer.nokia.com/Community/Wiki/Picasa_Image_Gallery_with_JSON_in_Window_Phone
+        // Refered the API from https://developers.google.com/picasa-web/docs/2.0/developers_guide_protocol
         public void DownloadAlbumImages(object sender, DownloadStringCompletedEventArgs e)
         {
             try
@@ -116,7 +155,6 @@ namespace Assignment1
                 if (e.Result == null || e.Error != null)
                 {
                     MessageBox.Show(AppResources.errMsgPicasaServer1);
-                   // ShowProgress = false;
                     return;
                 }
                 else
@@ -175,10 +213,14 @@ namespace Assignment1
                         // Add albumImage to albumImages Collection
                         app.albumImages.Add(albumImage);
                     }
-                    // Hide loading... animation
-                   // ShowProgress = false;
+                    
+                  
                     // Add albumImages to AlbumImagesListBox
                     listBoxPhotos.ItemsSource = app.albumImages;
+                    
+                    //Hide Progress Indicator
+                    SetProgessIndicator(false);
+                   
                     photoCount = entries.Count;
                     UpdateTileIfExist();
                     
@@ -187,25 +229,23 @@ namespace Assignment1
             catch (WebException)
             {
                 MessageBox.Show(AppResources.errMsgPicasaServer1);
-               // ShowProgress = false;
+                SetProgessIndicator(false);
             }
             catch (KeyNotFoundException)
             {
                 MessageBox.Show(AppResources.errMsgJSONError1);
-               // ShowProgress = false;
+                SetProgessIndicator(false);
             }
         }
 
-        private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
+
+        //Call photochooser from appbar
+        private void Upload_Click(object sender, EventArgs e)
         {
             photoChooser();
         }
 
-        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
-        {
-            photoChooser();
-        }
-
+       
         //Initiating the Photochooser task and showing the picture picker.
         void photoChooser()
         {
@@ -228,6 +268,10 @@ namespace Assignment1
         {
             const int BLOCK_SIZE = 4096;
             string AuthToken = App.auth;
+
+            SetProgessIndicator(true);
+            SystemTray.ProgressIndicator.Text = AppResources.showupload;
+
             if (AlbumIndex != -1)
             {
                 Uri uri = new Uri(app.albums[AlbumIndex].href, UriKind.Absolute);
@@ -262,7 +306,8 @@ namespace Assignment1
                 // Uploading is complete             
                 wc.WriteStreamClosed += (s, args) =>
                 {
-                    MessageBox.Show(AppResources.photouploaded);
+                   // MessageBox.Show(AppResources.photouploaded);
+                    SetProgessIndicator(false);
                     GetImages(AlbumIndex);
                   
                 };
@@ -316,6 +361,11 @@ namespace Assignment1
       
             int index = -1;
             MyAlbumImage item = null; 
+
+            //Start progress Indicator
+            SetProgessIndicator(true);
+            SystemTray.ProgressIndicator.Text = AppResources.showdelete;
+
             if (sender is MenuItem) 
             { 
                 ListBoxItem selectedListBoxItem = listBoxPhotos.ItemContainerGenerator.ContainerFromItem( 
@@ -362,7 +412,11 @@ namespace Assignment1
         {
             if (string.IsNullOrEmpty(e.Result))
             {
-                MessageBox.Show(AppResources.deletephoto);
+              // MessageBox.Show(AppResources.deletephoto);
+
+                //Stop progress Indicator
+                SetProgessIndicator(false);
+
                 GetImages(AlbumIndex);
                
             }
@@ -373,7 +427,7 @@ namespace Assignment1
         }
         
         // Logout from the app
-        private void ApplicationBarMenuItem_Click_1(object sender, EventArgs e)
+        private void logout_Click(object sender, EventArgs e)
         {
             App.auth = "";
             NavigationService.Navigate(new Uri("/MainPage.xaml?logout=1", UriKind.Relative));

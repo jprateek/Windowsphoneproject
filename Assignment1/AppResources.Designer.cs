@@ -142,6 +142,15 @@ namespace Assignment1 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to delete.
+        /// </summary>
+        public static string del {
+            get {
+                return ResourceManager.GetString("del", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry, we could not delete the photo now. Please try again later..
         /// </summary>
         public static string deleteError {
@@ -295,11 +304,38 @@ namespace Assignment1 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleting.
+        /// </summary>
+        public static string showdelete {
+            get {
+                return ResourceManager.GetString("showdelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading.
+        /// </summary>
+        public static string showupload {
+            get {
+                return ResourceManager.GetString("showupload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New photos will be notified here.
         /// </summary>
         public static string TileNotification {
             get {
                 return ResourceManager.GetString("TileNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin to start.
+        /// </summary>
+        public static string tilepin {
+            get {
+                return ResourceManager.GetString("tilepin", resourceCulture);
             }
         }
         
